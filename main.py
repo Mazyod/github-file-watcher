@@ -32,6 +32,8 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True
 )
+
+
 MAIN_HTML = """<html>
     <body>
         <h1>Cocos2d-x File Watcher!</h1>
@@ -44,27 +46,28 @@ MAIN_HTML = """<html>
 def _filename_to_diff_regex(filename):
 
     filename = re.escape(filename)
-    return r"(?:---|\+\+\+) (?:a|b).*?{}.*".format(filename)
+    return re.compile("(?:---|\+\+\+) (?:a|b).*?" + filename + ".*")
 
 
 def _find_matches_for_files_in_diff(files, diff_file):
 
     regexes = map(_filename_to_diff_regex, files)
-    regexes = map(re.compile, regexes)
-
     return map(lambda r: r.findall(diff_file), regexes)
 
 
 class MainHandler(webapp2.RequestHandler):
+
     def get(self):
-        self.response.write(MAIN_HTML)
+
+        template = JINJA_ENVIRONMENT.get_template('index.html')
+        self.response.write(template.render())
 
 
 class GithubHookHandler(webapp2.RequestHandler):
 
     def get(self):
 
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+        template = JINJA_ENVIRONMENT.get_template('github-webhook/index.html')
         self.response.write(template.render({'files': config.FILES}))
 
     def post(self):
@@ -98,7 +101,7 @@ class PHSBSubscriber(webapp2.RequestHandler):
     def get(self):
 
         hook_url = uri_for('github-webhook', _full=True)
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+        template = JINJA_ENVIRONMENT.get_template('subscribe/index.html')
 
         self.response.write(template.render({'webhook_url': hook_url}))
 
