@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div>
+        <p style="text-align: center">Files that will trigger a notification:</p>
+        {% for file in files %}
+        <p style="font-size: 24pt; text-align: center">{{ file }}</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
