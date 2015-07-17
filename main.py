@@ -92,7 +92,7 @@ class GithubHookHandler(webapp2.RequestHandler):
         if any(matches):
             urlfetch.fetch(
                 config.SLACK_WEBHOOK,
-                payload='payload={"text": "Changes to {}"}'.format(matches),
+                payload='payload={{"text": "Changes to {}"}}'.format(matches),
                 method=urlfetch.POST
             )
 
